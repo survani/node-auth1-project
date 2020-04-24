@@ -24,7 +24,7 @@ router.post("/login", (req, res) => {
   Users.findBy({ username })
     .first()
     .then((user) => {
-      console.log(password);
+      console.log(req.session);
       if (user && bcrypt.compareSync(password, user.password)) {
         req.session.user = username;
         res.status(200).json({ message: `Welcome ${username}!` });
@@ -35,9 +35,7 @@ router.post("/login", (req, res) => {
       }
     })
     .catch((error) => {
-      res
-        .status(500)
-        .json("Error, please contact the developer of this API", error);
+      res.status(500).json("Error, please contact the developer of this API");
     });
 });
 
@@ -64,9 +62,9 @@ router.delete("/logout", (req, res) => {
   if (req.session) {
     req.session.destroy((err) => {
       if (err) {
-        res.status(400).json("seems like there was an issue logging you out!");
+        res.status(400).json("error logging you out");
       } else {
-        res.json("You have been successfully logged out!");
+        res.json("Great! You are logged out.");
       }
     });
   }
